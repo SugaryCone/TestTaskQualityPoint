@@ -33,7 +33,7 @@ namespace TestsProd
             }
             if (addressResponse.fias_level < 9)
             {
-                _Logger.LogInformation(addressResponse.Street, addressResponse.Flat, addressResponse.House);
+                
                 throw new FiasLevelException();
             }
 

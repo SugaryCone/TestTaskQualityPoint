@@ -10,7 +10,15 @@ using System.Net.Http.Headers;
 
 namespace TestsProd
 {
-        public class CleanAddressClient : ICleanAddressService
+        public interface ICleanAddressService
+        {
+            public Task<AddressResponse> GetCleanAddressAsync(string address);
+
+        }
+
+
+
+    public class CleanAddressClient : ICleanAddressService
         {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMapper _mapper;
@@ -31,11 +39,13 @@ namespace TestsProd
 
             using var client = _httpClientFactory.CreateClient();
             
-            client.BaseAddress = new Uri("https://cleaner.dadata.ru/");
+            client.BaseAddress = new Uri(_settings.BaseAddress);
             client.DefaultRequestHeaders
                   .Accept
                   .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+
             if (string.IsNullOrEmpty(_settings.ApiKey) || string.IsNullOrEmpty(_settings.Secret)) throw new EmptyTokenException();
+
             client.DefaultRequestHeaders.Add("Authorization", "Token " + _settings.ApiKey);
             client.DefaultRequestHeaders.Add("X-Secret", _settings.Secret);
 
