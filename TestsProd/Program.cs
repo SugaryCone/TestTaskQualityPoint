@@ -16,10 +16,13 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
+builder.Host.UseSerilog(); 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+//Creating a CORS policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -28,19 +31,15 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
-builder.Host.UseSerilog(); 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
 
 builder.Services.AddAutoMapper(typeof(AddressProfile));
 builder.Services.Configure<APISettings>
         (builder.Configuration.GetSection("APISettings"));
 
 builder.Services.AddHttpClient();
+//registering a new service
+builder.Services.AddTransient<ICleanAddressService, CleanAddressClient>(); 
 
-builder.Services.AddTransient<ICleanAddressService, CleanAddressClient>(); //зарегистрировали новый сервис
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 
